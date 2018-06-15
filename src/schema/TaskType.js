@@ -1,7 +1,7 @@
 import {GraphQLList, GraphQLObjectType, GraphQLString} from "graphql";
 import {ProjectType} from "./ProjectType";
 import {TaskRelationType} from "./TaskRelationType";
-import {keyProject, keyRelation} from "../loaders";
+import {keyRelation, keyProject} from "../loaders";
 
 export const TaskType = new GraphQLObjectType({
     name: 'TaskType',
