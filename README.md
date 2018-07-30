@@ -1,2 +1,6 @@
 # redmine-graphql
-redmine graphql wrapperr
+redmine graphql wrapper
+
+#
+
+http://www.redmine.org/projects/redmine/wiki/Rest_api/
