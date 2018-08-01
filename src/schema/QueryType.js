@@ -26,14 +26,14 @@ export const QueryType = new GraphQLObjectType({
             args: {
                 offset: { type: GraphQLInt, defaultValue: 0 },
                 limit: { type: GraphQLInt, defaultValue: 20 },
+                id: {type: GraphQLString, defaultValue: ""},
                 redmine_api_host: { type: GraphQLString, defaultValue: "" },
                 redmine_api_key: { type: GraphQLString, defaultValue: "" },
             },
             resolve: async (root, args, { loaders, request }) => {
                 let host = args.redmine_api_host || request.headers['x-redmine-api-host'];
                 let key = args.redmine_api_key || request.headers['x-redmine-api-key'];
-                return await getRedmineProjects({ host, key }, args, request
-                );
+                return await getRedmineProjects({host, key}, args, request);
             }
         },
     }),

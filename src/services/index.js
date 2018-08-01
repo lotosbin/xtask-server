@@ -40,9 +40,15 @@ export async function getRedmineProjects({host: redmine_api_host, key: redmine_a
         headers['X-Redmine-API-Key'] = redmine_api_key;
     }
     log(`headers:${JSON.stringify(headers)}`);
-
-    let response: TResponse = await fetch(`${redmine_api_host}/projects.json?offset=${toQuery(args)}`, {headers: headers});
+    let base = `${redmine_api_host}/projects.json`;
+    if (args.id) {
+        base = `${redmine_api_host}/projects/${args.id}.json`;
+    }
+    let response: TResponse = await fetch(`${base}?offset=${toQuery(args)}`, {headers: headers});
     const result = await response.json();
+    if (args.id) {
+        return [result.project]
+    }
     return result.projects;
 }
 
