@@ -33,6 +33,8 @@ export const QueryType = new GraphQLObjectType({
             resolve: async (root, args, { loaders, request }) => {
                 let host = args.redmine_api_host || request.headers['x-redmine-api-host'];
                 let key = args.redmine_api_key || request.headers['x-redmine-api-key'];
+                request.headers['x-redmine-api-host'] = host;
+                request.headers['x-redmine-api-key'] = key;
                 return await getRedmineProjects({host, key}, args, request);
             }
         },

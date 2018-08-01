@@ -1,7 +1,8 @@
 import {GraphQLList, GraphQLObjectType, GraphQLString} from "graphql";
 import {ProjectType} from "./ProjectType";
 import {TaskRelationType} from "./TaskRelationType";
-import {keyRelation, keyProject} from "../loaders";
+import {keyRelation} from "../loaders/Relation";
+import {keyProject} from "../loaders/Project";
 
 export const TaskType = new GraphQLObjectType({
     name: 'TaskType',
@@ -27,10 +28,6 @@ export const TaskType = new GraphQLObjectType({
         },
         relations: {
             type: new GraphQLList(TaskRelationType),
-            args: {
-                redmine_api_host: {type: GraphQLString, defaultValue: ""},
-                redmine_api_key: {type: GraphQLString, defaultValue: ""},
-            },
             resolve: async ({id: issue_id}, {redmine_api_host, redmine_api_key}, {loaders, request}) => {
                 let {relation} = loaders;
                 let host = redmine_api_host || request.headers['x-redmine-api-host'];
