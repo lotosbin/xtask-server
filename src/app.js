@@ -3,6 +3,7 @@ import graphQLHTTP from 'express-graphql';
 import bodyParser from "body-parser";
 import schema from './schema/index';
 import {isDevelopment, isProduction} from './utils';
+import cors from "cors";
 
 const app = express();
 app.use(bodyParser.json());
