@@ -5,7 +5,7 @@ import {keyTask, taskLoader} from "./Task";
 const c = {
     taskLoader: taskLoader,
     keyTask: keyTask,
-    relationLoader: relationLoader,
+    relation: relationLoader,
     keyRelation: keyRelation,
     projectLoader: projectLoader,
     keyProject: keyProject,

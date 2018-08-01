@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import schema from './schema/index';
 import {isDevelopment, isProduction} from './utils';
 import cors from "cors";
-
+import loaders from './loaders'
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,8 +19,6 @@ if (isDevelopment()) {
 
 
 app.use(graphQLHTTP(async (req) => {
-    const loaders = {
-    };
     return {
         context: { loaders, request: req },
         schema,
@@ -29,7 +27,8 @@ app.use(graphQLHTTP(async (req) => {
 }
 ));
 
-app.listen(5000, () => {
+let port = 5000;
+app.listen(port, () => {
     console.log(`NODE_ENV=${isProduction() ? "production" : "development"}`);
-    return console.log('listen on http://localhost:5000');
+    return console.log(`listen on http://localhost:${port}`);
 });
