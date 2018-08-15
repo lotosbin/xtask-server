@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    "@babel/plugin-proposal-optional-chaining"
+  ],
+  "presets": [
+    "@babel/env",
+    "@babel/flow"
+  ]
+}
