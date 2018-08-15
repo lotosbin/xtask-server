@@ -20,10 +20,8 @@ export const QueryType = new GraphQLObjectType({
                 redmine_api_host: { type: GraphQLString, defaultValue: "" },
                 redmine_api_key: { type: GraphQLString, defaultValue: "" },
             },
-            resolve: async (root, args, { loaders, request }) => {
-                let host = args.redmine_api_host || request.headers['x-redmine-api-host'];
-                let key = args.redmine_api_key || request.headers['x-redmine-api-key'];
-                return await getRedmineIssues({ host, key }, args);
+            resolve: async (root, args, {loaders, request, repository}) => {
+                return await repository.getIssues(args);
             }
         },
         projects: {

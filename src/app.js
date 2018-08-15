@@ -5,6 +5,8 @@ import schema from './schema/index';
 import {isDevelopment, isProduction} from './utils';
 import cors from "cors";
 import loaders from './loaders'
+import {Repository} from "./Repository";
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,12 +17,16 @@ if (isDevelopment()) {
         credentials: true,
         optionsSuccessStatus: 200
     }));
+    app.use(function (req, res, next) {
+        req.headers['x-redmine-api-host'] = process.env.x_redmine_api_host;
+        req.headers['x-redmine-api-key'] = process.env.x_redmine_api_key;
+        next()
+    })
 }
-
 
 app.use(graphQLHTTP(async (req) => {
     return {
-        context: { loaders, request: req },
+        context: {loaders, request: req, repository: new Repository(req, loaders)},
         schema,
         graphiql: true,
     };

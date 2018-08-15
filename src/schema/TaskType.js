@@ -1,8 +1,8 @@
-import {GraphQLList, GraphQLObjectType, GraphQLString} from "graphql";
+import {GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString} from "graphql";
 import {ProjectType} from "./ProjectType";
 import {TaskRelationType} from "./TaskRelationType";
 import {keyRelation} from "../loaders/Relation";
-import {keyProject} from "../loaders/Project";
+import {UserType} from "./UserType";
 
 export const TaskType = new GraphQLObjectType({
     name: 'TaskType',
@@ -15,16 +15,27 @@ export const TaskType = new GraphQLObjectType({
         project_name: {type: GraphQLString, resolve: (t) => t.project.name},
         status_name: {type: GraphQLString, resolve: (t) => t.status.name},
         author_name: {type: GraphQLString, resolve: (t) => (t.author || {}).name},
+        author: {
+            type: UserType,
+            args: {},
+            resolve: async (t, args, {repository}) => await repository.getUserById(t.author?.id),
+        },
         assigned_to_name: {type: GraphQLString, resolve: (t) => (t.assigned_to || {}).name},
+        assigned_to: {
+            type: UserType,
+            args: {},
+            resolve: async (t, args, {repository}) => await repository.getUserById(t.assigned_to?.id),
+        },
         created_on: {type: GraphQLString},
         updated_on: {type: GraphQLString},
         closed_on: {type: GraphQLString},
         start_date: {type: GraphQLString},
         due_date: {type: GraphQLString},
+        done_ratio: {type: GraphQLInt},
         project: {
-            type: ProjectType, resolve: async (t, args, {loaders, request}) => {
-                return await loaders.project.load(keyProject(t.project.id, args, request));
-            }
+            type: ProjectType,
+            args: {},
+            resolve: async (t, args, {repository}) => await repository.getProjectById(t.project?.id)
         },
         relations: {
             type: new GraphQLList(TaskRelationType),

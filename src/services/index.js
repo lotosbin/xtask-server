@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-let toQuery = args => Object.keys(args).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(args[k])}`).join('&');
+let toQuery = args => args ? Object.keys(args).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(args[k])}`).join('&') : "";
 
 export async function getRedmineGroups(context, args) {
     return await getRedmineObjects('group', context, {...args, include: 'users'})
@@ -53,12 +53,15 @@ export async function getRedmineObjects(objectName, {host, key}, pArgs, base) {
     }
 }
 
-export async function getRedmineUser({host, key}, user_id) {
+export async function getRedmineUser({host, key}, user_id: string) {
     return await getRedmineObject('user', {host, key}, user_id)
 }
 
-export async function getRedmineObject(objectName, {host, key}, id, args) {
+export async function getRedmineObject(objectName: string, {host, key}, id: string, args) {
     const log = (message) => console.log(`getRedmineObject(${objectName}):${message}`);
+    if (!id) {
+        return null
+    }
     let headers = {
         'Content-Type': 'application/json'
     };
@@ -103,6 +106,7 @@ export async function getRedmineIssues({host, key}, {offset, limit, project_id, 
 
     let response: TResponse = await fetch(`${host}/issues.json?offset=${toQuery(args)}`, {headers: headers});
     let result = await response.json();
+    log(`result:${JSON.stringify(result)}`);
     return result.issues;
 }
 
@@ -178,19 +182,19 @@ export async function getRedmineProjects({host: redmine_api_host, key: redmine_a
     return result.projects;
 }
 
-export async function getRedmineProject(id, args, request) {
-    const log = (message, args) => console.log(`getRedmineProjects:${message}`, args);
-    let header = request.headers['x-redmine-api-key'];
-    log(`request.headers=${JSON.stringify(request.headers)}`);
+export async function getRedmineProject({host, key}, id: string) {
+    if (id === undefined || id == null) {
+        return null
+    }
+    const log = (message, args) => console.log(`getRedmineProject:${message}`, args);
     let headers = {
         'Content-Type': 'application/json'
     };
-    if (header) {
-        headers['X-Redmine-API-Key'] = header;
+    if (key) {
+        headers['X-Redmine-API-Key'] = key;
     }
     log(`headers:${JSON.stringify(headers)}`);
 
-    let host = request.headers['x-redmine-api-host'];
     let url = `${host}/projects/${id}.json?include=relations`;
     log(`url=${url}`);
     let response: TResponse = await fetch(url, {headers: headers});

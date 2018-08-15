@@ -1,28 +1,21 @@
 import {getRedmineProject} from "../services";
 import DataLoader from "dataloader";
 
-export async function getRedmineProjectByKey(key) {
+export async function getRedmineProjectByKey(pkey) {
     const log = (message) => console.log(`getRedmineProjectByKey:${message}`);
-    log(`${key}`);
-    let {id, args, request} = JSON.parse(key);
-    return await getRedmineProject(id, args, request)
+    log(JSON.stringify(pkey));
+    let {id, host, key} = JSON.parse(pkey);
+    return await getRedmineProject({host, key}, id, {include: 'relations'})
 }
 
 export const projectLoader = new DataLoader(keys => Promise.all(keys.map(getRedmineProjectByKey)));
 
-export function keyProject({host: redmine_api_host, key: redmine_api_key}, id, args, request) {
-    let header = redmine_api_key || request.headers["x-redmine-api-key"];
-    let host = redmine_api_host || request.headers['x-redmine-api-host'];
-    let key = {
+export function keyProject(request, id) {
+    let {host, key} = request;
+    let loader_key = {
         id: id,
-        args: {},
-        request: {headers: {}}
+        host: host || request.headers["x-redmine-api-host"],
+        key: key || request.headers["x-redmine-api-key"]
     };
-    if (header) {
-        key.request.headers['x-redmine-api-key'] = header;
-    }
-    if (host) {
-        key.request.headers['x-redmine-api-host'] = host;
-    }
-    return JSON.stringify(key)
+    return JSON.stringify(loader_key)
 }

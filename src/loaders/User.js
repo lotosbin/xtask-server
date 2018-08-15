@@ -15,7 +15,9 @@ export function keyUser(request, id) {
         key: key || request.headers['x-redmine-api-key'],
         id: id,
     };
-    return JSON.stringify(loader_key)
+    let loader_key_string = JSON.stringify(loader_key);
+    console.log(`keyUser:${loader_key_string}`);
+    return loader_key_string
 }
 
 export const userLoader = new DataLoader(keys => Promise.all(keys.map(getRedmineUserByKey)));
