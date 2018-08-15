@@ -48,8 +48,9 @@ export async function getRedmineObjects(objectName, {host, key}, pArgs = {}, bas
     log(`fetch:${url},${JSON.stringify(opts)}`);
     let response: TResponse = await fetch(url, opts);
     if (response.ok) {
-        let result = await response.json();
-        log(`response:${JSON.stringify(result)}`)
+        let json = await response.text();
+        let result = JSON.parse(json);
+        log(`response:${JSON.stringify(result)}`);
         return result[`${objectName}s`];
     } else {
         let text = await response.text();

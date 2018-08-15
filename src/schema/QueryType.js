@@ -15,11 +15,26 @@ export const QueryType = new GraphQLObjectType({
     fields: () => ({
         tasks: {
             type: new GraphQLList(TaskType),
+            deprecationReason: "use issues",
             args: {
                 offset: { type: GraphQLInt, defaultValue: 0 },
                 limit: { type: GraphQLInt, defaultValue: 20 },
+                issue_id: {type: GraphQLString, defaultValue: ""},
                 redmine_api_host: { type: GraphQLString, defaultValue: "" },
                 redmine_api_key: { type: GraphQLString, defaultValue: "" },
+            },
+            resolve: async (root, args, {loaders, request, repository}) => {
+                return await repository.getIssues(args);
+            }
+        },
+        issues: {
+            type: new GraphQLList(TaskType),
+            args: {
+                offset: {type: GraphQLInt, defaultValue: 0},
+                limit: {type: GraphQLInt, defaultValue: 20},
+                issue_id: {type: GraphQLString, defaultValue: ""},
+                redmine_api_host: {type: GraphQLString, defaultValue: ""},
+                redmine_api_key: {type: GraphQLString, defaultValue: ""},
             },
             resolve: async (root, args, {loaders, request, repository}) => {
                 return await repository.getIssues(args);
