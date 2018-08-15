@@ -1,11 +1,12 @@
 import {GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString} from "graphql";
-import {getRedmineGroups, getRedmineIssues, getRedmineProjects, getRedmineUsers} from "../services";
+import {getRedmineGroups, getRedmineProjects, getRedmineUsers} from "../services";
 import {TaskType} from "./TaskType";
 import {ProjectType} from "./ProjectType";
 import {UserType} from "./UserType";
 import {keyUser} from "../loaders/User";
 import {keyGroup} from "../loaders/Group";
 import {GroupType} from "./GroupType";
+import {IssueStatusType} from "./IssueStatusType";
 
 export const QueryType = new GraphQLObjectType({
     name: 'Query',
@@ -85,6 +86,13 @@ export const QueryType = new GraphQLObjectType({
                     return list
                 }
                 return await getRedmineGroups({host, key}, args);
+            }
+        },
+        issue_statuses: {
+            type: new GraphQLList(IssueStatusType),
+            args: {},
+            resolve: async (root, args, {repository}) => {
+                return await repository.getIssueStatuses();
             }
         },
     }),

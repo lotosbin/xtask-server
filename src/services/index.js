@@ -2,6 +2,10 @@ import fetch from "node-fetch";
 
 let toQuery = args => args ? Object.keys(args).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(args[k])}`).join('&') : "";
 
+export async function getRedmineIssueStatuses(context) {
+    // noinspection SpellCheckingInspection
+    return await getRedmineObjects('issue_statuse', context)
+}
 export async function getRedmineGroups(context, args) {
     return await getRedmineObjects('group', context, {...args, include: 'users'})
 }
@@ -18,7 +22,7 @@ export async function getRedmineUsers(context, args) {
     return await getRedmineObjects('user', context, args)
 }
 
-export async function getRedmineObjects(objectName, {host, key}, pArgs, base) {
+export async function getRedmineObjects(objectName, {host, key}, pArgs = {}, base = null) {
     let {offset, limit} = pArgs;
     const log = (message) => console.log(`getRedmineObjects(${base},${objectName}):${message}`);
 

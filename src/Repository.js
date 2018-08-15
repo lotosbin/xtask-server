@@ -1,5 +1,5 @@
 import {keyProject} from "./loaders/Project";
-import {getRedmineIssues} from "./services";
+import {getRedmineIssues, getRedmineIssueStatuses} from "./services";
 import loaders from "./loaders";
 import {keyUser} from "./loaders/User";
 
@@ -27,5 +27,9 @@ export class Repository {
 
     async getUserById(id: string) {
         return await loaders.userLoader.load(keyUser(this.getContext(), id))
+    }
+
+    async getIssueStatuses() {
+        return await getRedmineIssueStatuses(this.getContext());
     }
 }

@@ -3,6 +3,7 @@ import {ProjectType} from "./ProjectType";
 import {TaskRelationType} from "./TaskRelationType";
 import {keyRelation} from "../loaders/Relation";
 import {UserType} from "./UserType";
+import {IssueStatusType} from "./IssueStatusType";
 
 export const TaskType = new GraphQLObjectType({
     name: 'TaskType',
@@ -14,6 +15,7 @@ export const TaskType = new GraphQLObjectType({
         project_id: {type: GraphQLString},
         project_name: {type: GraphQLString, resolve: (t) => t.project.name},
         status_name: {type: GraphQLString, resolve: (t) => t.status.name},
+        status: {type: IssueStatusType, resolve: t => t.status},
         author_name: {type: GraphQLString, resolve: (t) => (t.author || {}).name},
         author: {
             type: UserType,
