@@ -2,7 +2,82 @@ import fetch from "node-fetch";
 
 let toQuery = args => Object.keys(args).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(args[k])}`).join('&');
 
-export async function getRedmineIssues({host, key}, {offset, limit, project_id, issue_id}) {
+export async function getRedmineGroups(context, args) {
+    return await getRedmineObjects('group', context, {...args, include: 'users'})
+}
+
+export async function getRedmineGroup({host, key}, user_id) {
+    return await getRedmineObject('group', {host, key}, user_id)
+}
+
+export async function getRedmineGroupUsers(context, group_id, args) {
+    return await getRedmineObjects('user', context, args, `/groups/${group_id}`)
+}
+
+export async function getRedmineUsers(context, args) {
+    return await getRedmineObjects('user', context, args)
+}
+
+export async function getRedmineObjects(objectName, {host, key}, pArgs, base) {
+    let {offset, limit} = pArgs;
+    const log = (message) => console.log(`getRedmineObjects(${base},${objectName}):${message}`);
+
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (key) {
+        headers['X-Redmine-API-Key'] = key;
+    }
+    let args = {
+        ...pArgs,
+        offset: offset || 0,
+        limit: limit || 25,
+    };
+
+    let path = `/${objectName}s.json?offset=${toQuery(args)}`;
+    if (base) {
+        path = `${base}${path}`
+    }
+    let url = `${host}${path}`;
+    let opts = {headers: headers};
+    log(`fetch:${url},${JSON.stringify(opts)}`);
+    let response: TResponse = await fetch(url, opts);
+    if (response.ok) {
+        let result = await response.json();
+        log(`response:${JSON.stringify(result)}`)
+        return result[`${objectName}s`];
+    } else {
+        let text = await response.text();
+        log(`response:${JSON.stringify(text)}`)
+    }
+}
+
+export async function getRedmineUser({host, key}, user_id) {
+    return await getRedmineObject('user', {host, key}, user_id)
+}
+
+export async function getRedmineObject(objectName, {host, key}, id, args) {
+    const log = (message) => console.log(`getRedmineObject(${objectName}):${message}`);
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (key) {
+        headers['X-Redmine-API-Key'] = key;
+    }
+    let url = `${host}/${objectName}s/${id}.json?${toQuery(args)}`;
+    let opts = {
+        headers: headers
+    };
+    log(`fetch:${url},${JSON.stringify(opts)}`);
+    let response: TResponse = await fetch(url, opts);
+    let result = await response.json();
+    log(`response:${JSON.stringify(result)}`);
+    return result[objectName];
+}
+
+export async function getRedmineIssues({host, key}, {offset, limit, project_id, issue_id, assigned_to_id}) {
     const log = (message) => console.log(`getRedmineIssues:${message}`);
 
     let headers = {
@@ -22,11 +97,62 @@ export async function getRedmineIssues({host, key}, {offset, limit, project_id, 
     if (issue_id) {
         args.issue_id = issue_id;
     }
-
+    if (assigned_to_id) {
+        args.assigned_to_id = assigned_to_id;
+    }
 
     let response: TResponse = await fetch(`${host}/issues.json?offset=${toQuery(args)}`, {headers: headers});
     let result = await response.json();
     return result.issues;
+}
+
+export async function issue_update({host, key}, {issue_id, start_date, due_date}) {
+    const log = (message) => console.log(
+        `issue_update:${message}`
+    );
+
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (key) {
+        headers['X-Redmine-API-Key'] = key;
+    }
+    let args = {};
+    if (start_date) {
+        args.start_date = start_date
+    }
+    if (due_date) {
+        args.due_date = due_date
+    }
+    log(
+        `args:${JSON.stringify(args)}`
+    );
+    let url =
+
+        `${host}/issues/${issue_id}.json`
+
+    ;
+    log(
+        `PUT ${url}`
+    );
+    let response: TResponse = await fetch(url, {
+        headers: headers,
+        method: "PUT",
+        body: JSON.stringify({issue: args})
+    });
+    if (response.ok) {
+        let result = await response.json();
+        log(
+            `reuslt:${JSON.stringify(result)}`
+        );
+        return result.issues;
+    } else {
+        let text = await response.text();
+        log(
+            `response:${JSON.stringify(text)}`
+        )
+    }
 }
 
 
@@ -81,7 +207,9 @@ interface TTaskRelation {
 }
 
 interface TResponse {
-    json: Function
+    ok: Boolean,
+    json: Function,
+    text: Function
 }
 
 export async function getRedmineRelations({host, key}, {issue_id}): Promise<Array<TTaskRelation>> {

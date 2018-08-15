@@ -15,10 +15,14 @@ export const ProjectType = new GraphQLObjectType({
         created_on: {type: GraphQLString},
         updated_on: {type: GraphQLString},
         issues: {
-            type: new GraphQLList(TaskType), resolve: async (p, args, {loaders, request}) => {
+            type: new GraphQLList(TaskType),
+            args: {
+                assigned_to_id: {type: GraphQLString}
+            },
+            resolve: async (p, args, {loaders, request}) => {
                 let host = args.redmine_api_host || request.headers['x-redmine-api-host'];
                 let key = args.redmine_api_key || request.headers['x-redmine-api-key'];
-                return await getRedmineIssues({host, key}, {project_id: p.id});
+                return await getRedmineIssues({host, key}, {...args, project_id: p.id});
             }
         }
     }),
