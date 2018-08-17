@@ -115,7 +115,7 @@ export async function getRedmineIssues({host, key}, {offset, limit, project_id, 
     return result.issues;
 }
 
-export async function issue_update({host, key}, {issue_id, start_date, due_date}) {
+export async function issue_update({host, key}, {issue_id, start_date, due_date, status_id}) {
     const log = (message) => console.log(
         `issue_update:${message}`
     );
@@ -134,17 +134,12 @@ export async function issue_update({host, key}, {issue_id, start_date, due_date}
     if (due_date) {
         args.due_date = due_date
     }
-    log(
-        `args:${JSON.stringify(args)}`
-    );
-    let url =
-
-        `${host}/issues/${issue_id}.json`
-
-    ;
-    log(
-        `PUT ${url}`
-    );
+    if (status_id) {
+        args.status_id = status_id
+    }
+    log(`args:${JSON.stringify(args)}`);
+    let url = `${host}/issues/${issue_id}.json`;
+    log(`PUT ${url}`);
     let response: TResponse = await fetch(url, {
         headers: headers,
         method: "PUT",
@@ -152,15 +147,11 @@ export async function issue_update({host, key}, {issue_id, start_date, due_date}
     });
     if (response.ok) {
         let result = await response.json();
-        log(
-            `reuslt:${JSON.stringify(result)}`
-        );
+        log(`result:${JSON.stringify(result)}`);
         return result.issues;
     } else {
         let text = await response.text();
-        log(
-            `response:${JSON.stringify(text)}`
-        )
+        log(`response:${JSON.stringify(text)}`)
     }
 }
 
