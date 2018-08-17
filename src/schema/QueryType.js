@@ -35,6 +35,7 @@ export const QueryType = new GraphQLObjectType({
                 issue_id: {type: GraphQLString, defaultValue: ""},
                 redmine_api_host: {type: GraphQLString, defaultValue: ""},
                 redmine_api_key: {type: GraphQLString, defaultValue: ""},
+                assigned_to_id: {type: GraphQLString},
             },
             resolve: async (root, args, {loaders, request, repository}) => {
                 return await repository.getIssues(args);
