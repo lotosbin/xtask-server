@@ -1,7 +1,8 @@
 import {keyProject} from "./loaders/Project";
-import {getRedmineIssues, getRedmineIssueStatuses} from "./services";
+import {getProjectMemberShips, getRedmineIssues, getRedmineIssueStatuses} from "./services";
 import loaders from "./loaders";
 import {keyUser} from "./loaders/User";
+import {keyGroup} from "./loaders/Group";
 
 export class Repository {
     constructor(request, loaders) {
@@ -12,8 +13,7 @@ export class Repository {
     getContext() {
         let host = this.request.headers['x-redmine-api-host'];
         let key = this.request.headers['x-redmine-api-key'];
-        let context = {host, key};
-        return context;
+        return {host, key};
     }
 
     async getProjectById(id: string) {
@@ -31,5 +31,13 @@ export class Repository {
 
     async getIssueStatuses() {
         return await getRedmineIssueStatuses(this.getContext());
+    }
+
+    async getGroupById(id: string) {
+        return await loaders.groupLoader.load(keyGroup(this.getContext(), id))
+    }
+
+    async getMemberShipsByProjectId(project_id, args) {
+        return await getProjectMemberShips(this.getContext(), project_id, args)
     }
 }

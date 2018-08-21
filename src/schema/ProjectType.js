@@ -1,6 +1,7 @@
 import {GraphQLList, GraphQLObjectType, GraphQLString} from "graphql";
 import {TaskType} from "./TaskType";
 import {getRedmineIssues} from "../services";
+import {MemberShipType} from "./MemberShipType";
 
 export const ProjectType = new GraphQLObjectType({
     name: 'ProjectType',
@@ -24,6 +25,11 @@ export const ProjectType = new GraphQLObjectType({
                 let key = args.redmine_api_key || request.headers['x-redmine-api-key'];
                 return await getRedmineIssues({host, key}, {...args, project_id: p.id});
             }
+        },
+        memberships: {
+            type: new GraphQLList(MemberShipType),
+            args: {},
+            resolve: async (root, args, {repository}) => await repository.getMemberShipsByProjectId(root.id, {...args, project_id: root.id})
         }
     }),
 });

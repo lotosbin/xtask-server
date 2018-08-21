@@ -2,6 +2,10 @@ import fetch from "node-fetch";
 
 let toQuery = args => args ? Object.keys(args).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(args[k])}`).join('&') : "";
 
+export async function getProjectMemberShips(context, project_id, args) {
+    // noinspection SpellCheckingInspection
+    return await getRedmineObjects('membership', context, args, `/projects/${project_id}`)
+}
 export async function getRedmineIssueStatuses(context) {
     // noinspection SpellCheckingInspection
     return await getRedmineObjects('issue_statuse', context)
