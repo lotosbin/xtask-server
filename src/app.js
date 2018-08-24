@@ -11,12 +11,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(cors({
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-redmine-api-host', 'x-redmine-api-key'],
+    credentials: true,
+    optionsSuccessStatus: 200
+}));
+
 if (isDevelopment()) {
-    app.use(cors({
-        allowedHeaders: ['Content-Type', 'Authorization', 'x-redmine-api-host', 'x-redmine-api-key'],
-        credentials: true,
-        optionsSuccessStatus: 200
-    }));
     app.use(function (req, res, next) {
         req.headers['x-redmine-api-host'] = process.env.x_redmine_api_host;
         req.headers['x-redmine-api-key'] = process.env.x_redmine_api_key;
