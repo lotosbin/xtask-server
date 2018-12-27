@@ -119,6 +119,9 @@ export async function getRedmineIssues({host, key}, {offset, limit, project_id, 
     return result.issues;
 }
 
+/**
+ * @see: http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Updating-an-issue
+ * */
 export async function issue_update({host, key}, {issue_id, start_date, due_date, status_id}) {
     const log = (message) => console.log(
         `issue_update:${message}`
@@ -142,20 +145,25 @@ export async function issue_update({host, key}, {issue_id, start_date, due_date,
         args.status_id = status_id
     }
     log(`args:${JSON.stringify(args)}`);
-    let url = `${host}/issues/${issue_id}.json`;
+    let url = `${host.replace(/\/$/, "")}/issues/${issue_id}.json`;
     log(`PUT ${url}`);
-    let response: TResponse = await fetch(url, {
-        headers: headers,
-        method: "PUT",
-        body: JSON.stringify({issue: args})
-    });
-    if (response.ok) {
-        let result = await response.json();
-        log(`result:${JSON.stringify(result)}`);
-        return result.issues;
-    } else {
-        let text = await response.text();
-        log(`response:${JSON.stringify(text)}`)
+    try {
+        let opts = {
+            headers: headers,
+            method: "PUT",
+            body: JSON.stringify({issue: args})
+        };
+        log(`opts ${JSON.stringify(opts)}`);
+        let response: TResponse = await fetch(url, opts);
+        if (response.ok) {
+            let issues = await getRedmineIssues({host, key}, {issue_id});
+            return issues && issues.length ? issues[0] : null
+        } else {
+            let text = await response.text();
+            log(`response:${JSON.stringify(text)}`)
+        }
+    } catch (e) {
+        log(`response:${JSON.stringify(e)}`)
     }
 }
 
