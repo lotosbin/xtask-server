@@ -34,7 +34,7 @@ app.use(graphQLHTTP(async (req) => {
 }
 ));
 
-let port = 5000;
+let port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`NODE_ENV=${isProduction() ? "production" : "development"}`);
     return console.log(`listen on http://localhost:${port}`);
