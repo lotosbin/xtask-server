@@ -21,6 +21,7 @@ type Query {
     projects(
         offset:Int=0,
         limit:Int=20,
+        id:String="",
         redmine_api_host:String="",
         redmine_api_key:String=""
     ):[ProjectType]

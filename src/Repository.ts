@@ -64,9 +64,11 @@ export class Repository {
   async getRedmineProjects(args: any) {
     return await getRedmineProjects(this.getContext(), args);
   }
-
+  /**
+   * @deprecated use `getUserById`
+   * */
   async getRedmineUser(id: string) {
-    return this.loaders.userLoader.load(keyUser(this.getContext(), id));
+    return await this.getUserById(id);
   }
 
   async getRedmineUsers(args: any) {
@@ -81,12 +83,15 @@ export class Repository {
     return await getRedmineObjects('group', this.getContext(), { ...args, include: 'users' });
   }
 
-  async getRedmineUserList(ids: [string]): Promise<Array<any>> {
+  async getRedmineUserList(ids: [string]): Promise<any[]> {
     return await this.loaders.userLoader.loadMany(ids.map(id => keyUser(this.getContext(), id)));
   }
 
+  /**
+   * @deprecated use `getIssues`
+   * */
   async getRedmineIssues(args: any) {
-    return await _getRedmineIssues(this.getContext(), args);
+    return await this.getIssues(args);
   }
 
   async issue_update(args: any) {

@@ -141,7 +141,7 @@ export interface TTaskRelation {
   relation_type: string;
 }
 
-export async function getRedmineRelations({ host, key }: IHost, { issue_id }): Promise<Array<TTaskRelation>> {
+export async function getRedmineRelations({ host, key }: IHost, { issue_id }): Promise<TTaskRelation[]> {
   const log = message => console.log(`getRedmineIssues:${message}`);
 
   let headers = {

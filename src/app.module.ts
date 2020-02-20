@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
-import { AppResolver } from './app.resolver';
+import { GroupTypeResolver, TaskTypeResolver, MemberShipType, ProjectTypeResolver, TaskRelationTypeResolver, IssueStatusTypeResolver, MutationType } from './app.resolver';
 import { Repository } from './Repository';
 
 @Module({
@@ -25,6 +25,6 @@ import { Repository } from './Repository';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, AppResolver],
+  providers: [AppService, TaskTypeResolver, MemberShipType, ProjectTypeResolver, GroupTypeResolver, TaskRelationTypeResolver, IssueStatusTypeResolver, MutationType],
 })
 export class AppModule {}
