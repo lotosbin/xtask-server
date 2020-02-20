@@ -51,6 +51,7 @@ type TaskType implements Node{
     author_name:String  @deprecated(reason:"use `author.name`.")
     author:UserType
     assigned_to_name:String @deprecated(reason:"use `assigned_to.name`.")
+    assigned_to:UserType
     created_on:String
     updated_on:String
     closed_on:String
@@ -66,12 +67,10 @@ type TaskRelationType implements Node{
     redmine_api_host:String
     redmine_api_key:String
     identifier:String
-    name:String
-    description:String
-    created_on:String
-    updated_on:String
+    issue_id:String
+    issue_to_id:String
+    relation_type:String
     issues:[TaskType]
-    memberships:[MemberShipType]
 }
 
 type MemberShipType implements Node{

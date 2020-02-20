@@ -65,12 +65,10 @@ export class TaskRelationType implements Node {
     redmine_api_host?: string;
     redmine_api_key?: string;
     identifier?: string;
-    name?: string;
-    description?: string;
-    created_on?: string;
-    updated_on?: string;
+    issue_id?: string;
+    issue_to_id?: string;
+    relation_type?: string;
     issues?: TaskType[];
-    memberships?: MemberShipType[];
 }
 
 export class TaskType implements Node {
@@ -84,6 +82,7 @@ export class TaskType implements Node {
     author_name?: string;
     author?: UserType;
     assigned_to_name?: string;
+    assigned_to?: UserType;
     created_on?: string;
     updated_on?: string;
     closed_on?: string;
