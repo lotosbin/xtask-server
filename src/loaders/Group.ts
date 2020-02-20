@@ -1,11 +1,9 @@
-import DataLoader from "dataloader";
-import {getRedmineGroup, getRedmineUser} from "../services";
+import DataLoader = require('dataloader');
+import {getRedmineObject} from "../services/util";
 
 async function getRedmineGroupByKey(pkey) {
-    const log = (message) => console.log(`getRedmineUserByKey:${message}`);
     let {host, key, id} = JSON.parse(pkey);
-    let user = await getRedmineGroup({host, key}, id);
-    return user
+    return await getRedmineObject('group', {host, key}, id)
 }
 
 export function keyGroup({host: redmine_api_host, key: redmine_api_key}, id) {
@@ -14,7 +12,6 @@ export function keyGroup({host: redmine_api_host, key: redmine_api_key}, id) {
         key: redmine_api_key,
         id: id,
     };
-
     return JSON.stringify(key)
 }
 

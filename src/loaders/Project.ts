@@ -1,5 +1,6 @@
 import {getRedmineProject} from "../services";
-import DataLoader from "dataloader";
+
+import DataLoader = require('dataloader');
 
 export async function getRedmineProjectByKey(pkey) {
     const log = (message) => console.log(`getRedmineProjectByKey:${message}`);

@@ -1,4 +1,4 @@
-import DataLoader from "dataloader";
+import DataLoader = require('dataloader');
 import {getRedmineRelations} from "../services";
 
 export function keyRelation({host: redmine_api_host, key: redmine_api_key}, issue_id) {

@@ -1,0 +1,130 @@
+interface Node{
+    id:ID!
+}
+type Query {
+    tasks(
+        offset:Int=0,
+        limit:Int=20,
+        issue_id:String="",
+        redmine_api_host:String="",
+        redmine_api_key:String=""
+    ):[TaskType] @deprecated(reason:"use `issues`")
+    issues(
+        offset:Int=0,
+        limit:Int=20,
+        issue_id:String="",
+        redmine_api_host:String="",
+        redmine_api_key:String="",
+        assigned_to_id:String,
+        project_id:String
+    ):[TaskType]
+    projects(
+        offset:Int=0,
+        limit:Int=20,
+        redmine_api_host:String="",
+        redmine_api_key:String=""
+    ):[ProjectType]
+    users(
+        offset:Int=0,
+        limit:Int=20,
+        id:String="",
+        redmine_api_host:String="",
+        redmine_api_key:String=""
+    ):[UserType]
+    groups(
+        offset:Int=0,
+        limit:Int=20,
+        id:String="",
+        redmine_api_host:String="",
+        redmine_api_key:String=""
+    ):[GroupType]
+    issue_statuses:[IssueStatusType]
+}
+type TaskType implements Node{
+    id:ID!
+    subject:String
+    description:String
+    project_id:String   @deprecated(reason:"use `project.id`.")
+    project_name:String @deprecated(reason:"use `project.name`.")
+    status_name:String  @deprecated(reason:"use `status.name`.")
+    status:IssueStatusType
+    author_name:String  @deprecated(reason:"use `author.name`.")
+    author:UserType
+    assigned_to_name:String @deprecated(reason:"use `assigned_to.name`.")
+    created_on:String
+    updated_on:String
+    closed_on:String
+    start_date:String
+    due_date:String
+    done_ratio:String
+    project:ProjectType
+    relations:[TaskRelationType]
+}
+
+type TaskRelationType implements Node{
+    id:ID!
+    redmine_api_host:String
+    redmine_api_key:String
+    identifier:String
+    name:String
+    description:String
+    created_on:String
+    updated_on:String
+    issues:[TaskType]
+    memberships:[MemberShipType]
+}
+
+type MemberShipType implements Node{
+    id:ID!
+    user:UserType
+    project:ProjectType
+    group:GroupType
+}
+
+type GroupType implements Node{
+    id:ID!
+    name:String
+    users:[UserType]
+}
+
+type ProjectType implements Node{
+    id:ID!
+    redmine_api_host:String
+    redmine_api_key:String
+    identifier:String
+    name:String
+    description:String
+    created_on:String
+    updated_on:String
+    issues(
+        assigned_to_id:String
+    ):[TaskType]
+    memberships:[MemberShipType]
+}
+
+type UserType implements Node{
+    id:ID!
+    login:String
+    firstname:String
+    mail:String
+    created_on:String
+    last_login_on:String
+    api_key:String
+    status:Int
+    group_id:String
+}
+
+type IssueStatusType {
+    id:String
+    name:String
+    is_default:Boolean
+    is_closed:Boolean
+}
+type Mutation {
+    task_update(
+        issue_id:String,
+        start_date:String,
+        due_date:String,
+        status_id:String
+    ):TaskType
+}

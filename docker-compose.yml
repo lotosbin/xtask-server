@@ -1,6 +1,0 @@
-version: '2'
-services:
-  graphql:
-    build: .
-    ports:
-      - "5000:5000"

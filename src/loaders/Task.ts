@@ -1,10 +1,9 @@
 import {getRedmineIssues} from "../services";
-import DataLoader from "dataloader";
+import DataLoader = require('dataloader');
 
 async function getRedmineTaskByKey(pkey) {
-    const log = (message) => console.log(`getRedmineProjectByKey:${message}`);
     let {host, key, id} = JSON.parse(pkey);
-    let tasks = await getRedmineIssues({host, key}, {issue_id: id});
+    let tasks = await getRedmineIssues({host, key}, {issue_id: id} as any);
     return tasks[0]
 }
 
@@ -18,4 +17,4 @@ export function keyTask({host: redmine_api_host, key: redmine_api_key}, id) {
     return JSON.stringify(key)
 }
 
-export const taskLoader = new DataLoader(keys => Promise.all(keys.map(getRedmineTaskByKey)));
+ export  const taskLoader = new DataLoader(keys => Promise.all(keys.map(getRedmineTaskByKey)));

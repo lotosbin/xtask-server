@@ -4,11 +4,11 @@ import {taskLoader} from "./Task";
 import {userLoader} from "./User";
 import {groupLoader} from "./Group";
 
-const c = {
+const loaders: any = {
     taskLoader: taskLoader,
     relation: relationLoader,
     projectLoader: projectLoader,
     userLoader: userLoader,
     groupLoader: groupLoader,
 };
-export default c;
+export default loaders;

@@ -1,11 +1,9 @@
-import DataLoader from "dataloader";
-import {getRedmineUser} from "../services";
+import DataLoader = require('dataloader');
+import {getRedmineObject} from "../services/util";
 
 async function getRedmineUserByKey(pkey) {
-    const log = (message) => console.log(`getRedmineUserByKey:${message}`);
     let {host, key, id} = JSON.parse(pkey);
-    let user = await getRedmineUser({host, key}, id);
-    return user
+    return await getRedmineObject('user', {host, key}, id)
 }
 
 export function keyUser(request, id) {
