@@ -153,7 +153,7 @@ export class IssueStatusTypeResolver {
 
 @Resolver('MutationType')
 export class MutationType {
-  @ResolveProperty()
+  @Mutation('task_update')
   async task_update(@Parent() parent: any, @Args() args, @Context() { repository }: IContext) {
     await repository.issue_update(args);
     let issues = await repository.getRedmineIssues({ issue_id: args.issue_id });
